@@ -93,7 +93,7 @@ export function TodoItem({ todo, onToggleComplete }: TodoItemProps) {
                     Created: {getRelativeTimeString(createdDate)}
                   </span>
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent side="bottom">
                   <p>{formatLongDate(createdDate)}</p>
                 </TooltipContent>
               </Tooltip>
@@ -103,7 +103,7 @@ export function TodoItem({ todo, onToggleComplete }: TodoItemProps) {
                     Updated: {getRelativeTimeString(updatedDate)}
                   </span>
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent side="bottom">
                   <p>{formatLongDate(updatedDate)}</p>
                 </TooltipContent>
               </Tooltip>
