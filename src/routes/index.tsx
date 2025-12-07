@@ -17,7 +17,7 @@ export const Route = createFileRoute('/')({
 function App() {
   const todos = Route.useLoaderData()
   return (
-    <div className="min-h-screen bg-[#FEFEFE] p-8">
+    <div className="min-h-screen bg-[#FFF8E7] p-8">
       <div className="max-w-4xl mx-auto">
         <Header />
         <div className="space-y-4">
