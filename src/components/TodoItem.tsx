@@ -7,7 +7,46 @@ interface TodoItemProps {
   todo: Todo
 }
 
+function getRelativeTimeString(date: Date): string {
+  const now = new Date()
+  const diffInMs = now.getTime() - date.getTime()
+  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24))
+  const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60))
+  const diffInMinutes = Math.floor(diffInMs / (1000 * 60))
+
+  if (diffInMinutes < 1) return 'Just now'
+  if (diffInMinutes < 60) return `${diffInMinutes}m ago`
+  if (diffInHours < 24) return `${diffInHours}h ago`
+  if (diffInDays === 0) return 'Today'
+  if (diffInDays === 1) return 'Yesterday'
+  if (diffInDays < 7) return `${diffInDays} days ago`
+  if (diffInDays < 30) {
+    const weeks = Math.floor(diffInDays / 7)
+    return weeks === 1 ? '1 week ago' : `${weeks} weeks ago`
+  }
+  if (diffInDays < 365) {
+    const months = Math.floor(diffInDays / 30)
+    return months === 1 ? '1 month ago' : `${months} months ago`
+  }
+  const years = Math.floor(diffInDays / 365)
+  return years === 1 ? '1 year ago' : `${years} years ago`
+}
+
 export function TodoItem({ todo }: TodoItemProps) {
+  const createdDate = new Date(todo.createdAt)
+  const updatedDate = new Date(todo.updatedAt)
+
+  const formatLongDate = (date: Date) => {
+    return date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  }
+
   return (
     <div
       className={`border-4 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] ${
@@ -36,11 +75,17 @@ export function TodoItem({ todo }: TodoItemProps) {
               {todo.name}
             </p>
             <div className="mt-2 flex gap-4 text-sm font-bold">
-              <span className="bg-black text-white px-2 py-1">
-                Created: {new Date(todo.createdAt).toLocaleDateString()}
+              <span
+                className="bg-black text-white px-2 py-1 cursor-help"
+                title={formatLongDate(createdDate)}
+              >
+                Created: {getRelativeTimeString(createdDate)}
               </span>
-              <span className="bg-black text-white px-2 py-1">
-                Updated: {new Date(todo.updatedAt).toLocaleDateString()}
+              <span
+                className="bg-black text-white px-2 py-1 cursor-help"
+                title={formatLongDate(updatedDate)}
+              >
+                Updated: {getRelativeTimeString(updatedDate)}
               </span>
             </div>
           </div>
