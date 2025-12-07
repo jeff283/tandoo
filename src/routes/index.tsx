@@ -36,7 +36,7 @@ function App() {
               console.log('Add new todo')
             }}
           >
-            <PlusIcon className="h-5 w-5" />
+            <PlusIcon className="size-7" strokeWidth={2.7} />
             Add Todo
           </button>
         </div>
