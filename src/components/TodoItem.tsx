@@ -68,21 +68,21 @@ export function TodoItem({ todo }: TodoItemProps) {
           </div>
           <div className="flex-1">
             <p
-              className={`text-2xl font-bold ${
+              className={`text-3xl font-black ${
                 todo.isComplete ? 'line-through opacity-70' : ''
               }`}
             >
               {todo.name}
             </p>
-            <div className="mt-2 flex gap-4 text-sm font-bold">
+            <div className="mt-3 flex gap-3 text-xs">
               <span
-                className="bg-black text-white px-2 py-1 cursor-help"
+                className="border-2 border-black bg-white px-2 py-0.5 cursor-help shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
                 title={formatLongDate(createdDate)}
               >
                 Created: {getRelativeTimeString(createdDate)}
               </span>
               <span
-                className="bg-black text-white px-2 py-1 cursor-help"
+                className="border-2 border-black bg-white px-2 py-0.5 cursor-help shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
                 title={formatLongDate(updatedDate)}
               >
                 Updated: {getRelativeTimeString(updatedDate)}
