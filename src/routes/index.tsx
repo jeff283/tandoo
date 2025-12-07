@@ -22,7 +22,13 @@ function App() {
         <Header />
         <div className="space-y-4">
           {todos.map((todo) => (
-            <TodoItem key={todo.id} todo={todo} />
+            <TodoItem
+              key={todo.id}
+              todo={todo}
+              onToggleComplete={(id) => {
+                console.log('Todo Clicked: ', id)
+              }}
+            />
           ))}
         </div>
       </div>

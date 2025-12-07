@@ -5,6 +5,7 @@ type Todo = InferSelectModel<typeof todos>
 
 interface TodoItemProps {
   todo: Todo
+  onToggleComplete: (id: string) => void
 }
 
 function getRelativeTimeString(date: Date): string {
@@ -32,7 +33,7 @@ function getRelativeTimeString(date: Date): string {
   return years === 1 ? '1 year ago' : `${years} years ago`
 }
 
-export function TodoItem({ todo }: TodoItemProps) {
+export function TodoItem({ todo, onToggleComplete }: TodoItemProps) {
   const createdDate = new Date(todo.createdAt)
   const updatedDate = new Date(todo.updatedAt)
 
@@ -47,6 +48,10 @@ export function TodoItem({ todo }: TodoItemProps) {
     })
   }
 
+  const handleToggleComplete = () => {
+    onToggleComplete(todo.id)
+  }
+
   return (
     <div
       className={`border-4 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] ${
@@ -56,7 +61,8 @@ export function TodoItem({ todo }: TodoItemProps) {
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-4 flex-1">
           <div
-            className={`w-8 h-8 border-4 border-black flex-shrink-0 mt-1 ${
+            onClick={handleToggleComplete}
+            className={`w-8 h-8 border-4 border-black flex-shrink-0 mt-1 cursor-pointer ${
               todo.isComplete ? 'bg-black' : 'bg-white'
             }`}
           >
