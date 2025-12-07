@@ -1,6 +1,12 @@
 import type { todos } from '@/db/schema'
 import type { InferSelectModel } from 'drizzle-orm'
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+
 type Todo = InferSelectModel<typeof todos>
 
 interface TodoItemProps {
@@ -81,18 +87,26 @@ export function TodoItem({ todo, onToggleComplete }: TodoItemProps) {
               {todo.name}
             </p>
             <div className="mt-3 flex gap-3 text-xs">
-              <span
-                className="border-2 border-black bg-white px-2 py-0.5 cursor-help shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-                title={formatLongDate(createdDate)}
-              >
-                Created: {getRelativeTimeString(createdDate)}
-              </span>
-              <span
-                className="border-2 border-black bg-white px-2 py-0.5 cursor-help shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-                title={formatLongDate(updatedDate)}
-              >
-                Updated: {getRelativeTimeString(updatedDate)}
-              </span>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="border-2 border-black bg-white px-2 py-0.5 cursor-pointer shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                    Created: {getRelativeTimeString(createdDate)}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{formatLongDate(createdDate)}</p>
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="border-2 border-black bg-white px-2 py-0.5 cursor-pointer shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                    Updated: {getRelativeTimeString(updatedDate)}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{formatLongDate(updatedDate)}</p>
+                </TooltipContent>
+              </Tooltip>
             </div>
           </div>
         </div>
