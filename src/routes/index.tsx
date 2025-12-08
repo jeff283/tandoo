@@ -6,6 +6,14 @@ import { db } from '@/db'
 import { Header } from '@/components/Header'
 import { TodoItem } from '@/components/TodoItem'
 
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from '@/components/ui/empty'
+
 const todosFn = createServerFn({ method: 'GET' }).handler(async () => {
   const todos = await db.query.todos.findMany()
   return todos
@@ -21,6 +29,7 @@ function App() {
 
   const completedTodos = todos.filter((todo) => todo.isComplete).length
   const totalTodos = todos.length
+  // const totalTodos = 0
 
   return (
     <div className="min-h-screen bg-[#FFF8E7] p-8">
@@ -37,17 +46,37 @@ function App() {
             </button>
           </Link>
         </div>
-        <div className="space-y-4">
-          {todos.map((todo) => (
-            <TodoItem
-              key={todo.id}
-              todo={todo}
-              onToggleComplete={(id) => {
-                console.log('Todo Clicked: ', id)
-              }}
-            />
-          ))}
-        </div>
+        {totalTodos === 0 ? (
+          <Empty>
+            <EmptyHeader>
+              <EmptyTitle>No Todos Yet</EmptyTitle>
+              <EmptyDescription>
+                You haven&apos;t created any todos yet. Get started by adding
+                your first task.
+              </EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+              <Link to="/todos/new">
+                <button className="px-6 py-3 text-lg font-bold border-4 border-black bg-lime-400 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[3px] hover:translate-y-[3px] transition-all rounded-none active:shadow-none active:translate-x-1.5 active:translate-y-1.5 flex items-center gap-2">
+                  <PlusIcon className="size-7" strokeWidth={2.7} />
+                  Add Your First Todo
+                </button>
+              </Link>
+            </EmptyContent>
+          </Empty>
+        ) : (
+          <div className="space-y-4">
+            {todos.map((todo) => (
+              <TodoItem
+                key={todo.id}
+                todo={todo}
+                onToggleComplete={(id) => {
+                  console.log('Todo Clicked: ', id)
+                }}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )
