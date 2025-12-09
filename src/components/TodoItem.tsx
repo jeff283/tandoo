@@ -7,6 +7,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { PencilIcon, Trash2Icon } from 'lucide-react'
+import { useState } from 'react'
 
 type Todo = InferSelectModel<typeof todos>
 
@@ -17,37 +18,13 @@ interface TodoItemProps {
   onDelete: (id: string) => void
 }
 
-function getRelativeTimeString(date: Date): string {
-  const now = new Date()
-  const diffInMs = now.getTime() - date.getTime()
-  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24))
-  const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60))
-  const diffInMinutes = Math.floor(diffInMs / (1000 * 60))
-
-  if (diffInMinutes < 1) return 'Just now'
-  if (diffInMinutes < 60) return `${diffInMinutes}m ago`
-  if (diffInHours < 24) return `${diffInHours}h ago`
-  if (diffInDays === 0) return 'Today'
-  if (diffInDays === 1) return 'Yesterday'
-  if (diffInDays < 7) return `${diffInDays} days ago`
-  if (diffInDays < 30) {
-    const weeks = Math.floor(diffInDays / 7)
-    return weeks === 1 ? '1 week ago' : `${weeks} weeks ago`
-  }
-  if (diffInDays < 365) {
-    const months = Math.floor(diffInDays / 30)
-    return months === 1 ? '1 month ago' : `${months} months ago`
-  }
-  const years = Math.floor(diffInDays / 365)
-  return years === 1 ? '1 year ago' : `${years} years ago`
-}
-
 export function TodoItem({
   todo,
   onToggleComplete,
   onEdit,
   onDelete,
 }: TodoItemProps) {
+  const [isActive, setIsActive] = useState(false)
   const createdDate = new Date(todo.createdAt)
   const updatedDate = new Date(todo.updatedAt)
 
@@ -62,21 +39,29 @@ export function TodoItem({
     })
   }
 
-  const handleToggleComplete = () => {
+  const handleToggleComplete = (e: React.MouseEvent) => {
+    e.stopPropagation()
     onToggleComplete(todo.id)
   }
 
-  const handleEdit = () => {
+  const handleEdit = (e: React.MouseEvent) => {
+    e.stopPropagation()
     onEdit(todo.id)
   }
 
-  const handleDelete = () => {
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation()
     onDelete(todo.id)
+  }
+
+  const handleTodoClick = () => {
+    setIsActive(!isActive)
   }
 
   return (
     <div
-      className={`group relative border-4 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 ${
+      onClick={handleTodoClick}
+      className={`group relative border-4 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 cursor-pointer ${
         todo.isComplete ? 'bg-green-400' : 'bg-white'
       }`}
     >
@@ -126,7 +111,9 @@ export function TodoItem({
             </div>
           </div>
         </div>
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div
+          className={`absolute right-4 top-1/2 -translate-y-1/2 flex gap-2 transition-opacity ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+        >
           <button
             onClick={handleEdit}
             className="p-2 border-4 border-black bg-blue-400 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
@@ -145,4 +132,29 @@ export function TodoItem({
       </div>
     </div>
   )
+}
+
+function getRelativeTimeString(date: Date): string {
+  const now = new Date()
+  const diffInMs = now.getTime() - date.getTime()
+  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24))
+  const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60))
+  const diffInMinutes = Math.floor(diffInMs / (1000 * 60))
+
+  if (diffInMinutes < 1) return 'Just now'
+  if (diffInMinutes < 60) return `${diffInMinutes}m ago`
+  if (diffInHours < 24) return `${diffInHours}h ago`
+  if (diffInDays === 0) return 'Today'
+  if (diffInDays === 1) return 'Yesterday'
+  if (diffInDays < 7) return `${diffInDays} days ago`
+  if (diffInDays < 30) {
+    const weeks = Math.floor(diffInDays / 7)
+    return weeks === 1 ? '1 week ago' : `${weeks} weeks ago`
+  }
+  if (diffInDays < 365) {
+    const months = Math.floor(diffInDays / 30)
+    return months === 1 ? '1 month ago' : `${months} months ago`
+  }
+  const years = Math.floor(diffInDays / 365)
+  return years === 1 ? '1 year ago' : `${years} years ago`
 }
