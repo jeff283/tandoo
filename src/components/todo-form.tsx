@@ -30,9 +30,12 @@ export default function TodoForm({
   const Icon = isAddMode ? PlusIcon : CheckIcon
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label htmlFor="todo-input" className="block text-sm font-bold mb-2">
+        <label
+          htmlFor="todo-input"
+          className="block text-lg font-black mb-3 uppercase tracking-wide"
+        >
           Todo Task
         </label>
         <Input
@@ -40,7 +43,7 @@ export default function TodoForm({
           autoFocus
           ref={nameRef}
           placeholder="Enter your todo..."
-          className="w-full px-4 py-3 text-lg font-semibold border-4 border-black rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] focus:-translate-x-0.5 focus:-translate-y-0.5 transition-all bg-white focus:outline-none focus:ring-0"
+          className="w-full px-6 py-5 text-xl font-bold border-4 border-black rounded-none shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] focus:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] focus:-translate-x-0.5 focus:-translate-y-0.5 transition-all bg-white focus:outline-none focus:ring-0 placeholder:font-semibold placeholder:text-gray-400"
           aria-label="Todo task"
           defaultValue={initialValue}
         />
