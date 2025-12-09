@@ -63,55 +63,55 @@ export function TodoItem({
   return (
     <div
       onClick={handleTodoClick}
-      className={`group border-4 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 cursor-pointer ${
+      className={`group border-4 border-black p-3 sm:p-4 md:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 cursor-pointer ${
         todo.isComplete ? 'bg-green-400' : 'bg-white'
       }`}
     >
-      <div className="flex items-start gap-4">
+      <div className="flex items-start gap-2 sm:gap-3 md:gap-4">
         <div
           onClick={handleToggleComplete}
-          className={`w-8 h-8 border-4 border-black shrink-0 mt-1 cursor-pointer ${
+          className={`w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 border-3 sm:border-4 border-black shrink-0 mt-0.5 sm:mt-1 cursor-pointer ${
             todo.isComplete ? 'bg-black' : 'bg-white'
           }`}
         >
           {todo.isComplete && (
-            <div className="text-white text-center font-black text-xl leading-none">
+            <div className="text-white text-center font-black text-base sm:text-lg md:text-xl leading-none">
               ✓
             </div>
           )}
         </div>
         <div className="flex-1 min-w-0">
           <p
-            className={`text-3xl font-black ${
+            className={`text-xl sm:text-2xl md:text-3xl font-black wrap-break-words ${
               todo.isComplete ? 'line-through opacity-70' : ''
             }`}
           >
             {todo.name}
           </p>
           {isActive && (
-            <div className="mt-3 flex gap-2 md:hidden">
+            <div className="mt-2 sm:mt-3 flex gap-2 md:hidden">
               <button
                 onClick={handleEdit}
-                className="px-4 py-2 border-4 border-black bg-blue-400 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all flex items-center gap-2 font-bold"
+                className="flex-1 px-3 sm:px-4 py-1.5 sm:py-2 border-3 sm:border-4 border-black bg-blue-400 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] sm:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all flex items-center justify-center gap-1.5 sm:gap-2 font-bold text-sm sm:text-base"
                 aria-label="Edit todo"
               >
-                <PencilIcon className="size-4" strokeWidth={2.5} />
+                <PencilIcon className="size-3.5 sm:size-4" strokeWidth={2.5} />
                 <span>Edit</span>
               </button>
               <button
                 onClick={handleDelete}
-                className="px-4 py-2 border-4 border-black bg-red-400 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all flex items-center gap-2 font-bold"
+                className="flex-1 px-3 sm:px-4 py-1.5 sm:py-2 border-3 sm:border-4 border-black bg-red-400 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] sm:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all flex items-center justify-center gap-1.5 sm:gap-2 font-bold text-sm sm:text-base"
                 aria-label="Delete todo"
               >
-                <Trash2Icon className="size-4" strokeWidth={2.5} />
+                <Trash2Icon className="size-3.5 sm:size-4" strokeWidth={2.5} />
                 <span>Delete</span>
               </button>
             </div>
           )}
-          <div className="mt-3 flex gap-3 text-xs">
+          <div className="mt-2 sm:mt-3 flex flex-wrap gap-2 sm:gap-3 text-xs">
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="border-2 border-black bg-white px-2 py-0.5 cursor-pointer shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                <span className="border-2 border-black bg-white px-1.5 sm:px-2 py-0.5 cursor-pointer shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-xs">
                   Created: {getRelativeTimeString(createdDate)}
                 </span>
               </TooltipTrigger>
@@ -121,7 +121,7 @@ export function TodoItem({
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="border-2 border-black bg-white px-2 py-0.5 cursor-pointer shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                <span className="border-2 border-black bg-white px-1.5 sm:px-2 py-0.5 cursor-pointer shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-xs">
                   Updated: {getRelativeTimeString(updatedDate)}
                 </span>
               </TooltipTrigger>
