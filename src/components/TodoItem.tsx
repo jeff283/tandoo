@@ -60,7 +60,7 @@ export function TodoItem({ todo, onToggleComplete }: TodoItemProps) {
 
   return (
     <div
-      className={`border-4 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] ${
+      className={`border-4 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 ${
         todo.isComplete ? 'bg-green-400' : 'bg-white'
       }`}
     >
@@ -68,7 +68,7 @@ export function TodoItem({ todo, onToggleComplete }: TodoItemProps) {
         <div className="flex items-start gap-4 flex-1">
           <div
             onClick={handleToggleComplete}
-            className={`w-8 h-8 border-4 border-black flex-shrink-0 mt-1 cursor-pointer ${
+            className={`w-8 h-8 border-4 border-black shrink-0 mt-1 cursor-pointer ${
               todo.isComplete ? 'bg-black' : 'bg-white'
             }`}
           >
