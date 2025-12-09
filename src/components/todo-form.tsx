@@ -52,11 +52,11 @@ export default function TodoForm({
   const Icon = isAddMode ? PlusIcon : CheckIcon
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
       <div>
         <label
           htmlFor="todo-input"
-          className="block text-lg font-black mb-3 uppercase tracking-wide"
+          className="block text-sm sm:text-base md:text-lg font-black mb-2 sm:mb-3 uppercase tracking-wide"
         >
           Todo Task
         </label>
@@ -65,7 +65,7 @@ export default function TodoForm({
           autoFocus
           ref={nameRef}
           placeholder="Enter your todo..."
-          className="w-full h-16 px-6 py-6 text-xl md:text-2xl font-medium border-4 border-black rounded-none shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] focus:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] focus:-translate-x-0.5 focus:-translate-y-0.5 transition-all bg-white focus:outline-none focus:ring-0 placeholder:font-semibold placeholder:text-gray-400"
+          className="w-full h-12 sm:h-14 md:h-16 px-3 sm:px-4 md:px-6 py-3 sm:py-4 md:py-6 text-base sm:text-lg md:text-xl font-medium border-4 border-black rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] focus:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:focus:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] focus:-translate-x-0.5 focus:-translate-y-0.5 transition-all bg-white focus:outline-none focus:ring-0 placeholder:font-semibold placeholder:text-gray-400"
           aria-label="Todo task"
           defaultValue={initialValue}
         />
@@ -75,7 +75,7 @@ export default function TodoForm({
         type="submit"
         disabled={isLoading}
         className={`
-          w-full px-6 py-3 text-lg font-black border-4 border-black rounded-none
+          w-full px-4 sm:px-6 py-2.5 sm:py-3 text-base sm:text-lg font-black border-4 border-black rounded-none
           transition-all duration-150
           ${
             isLoading
@@ -89,12 +89,12 @@ export default function TodoForm({
         <div className="flex items-center justify-center gap-2">
           {isLoading ? (
             <>
-              <Loader2Icon className="size-5 animate-spin" strokeWidth={3} />
+              <Loader2Icon className="size-4 sm:size-5" strokeWidth={3} />
               <span>{loadingText}</span>
             </>
           ) : (
             <>
-              <Icon className="size-5" strokeWidth={3} />
+              <Icon className="size-4 sm:size-5" strokeWidth={3} />
               <span>{buttonText}</span>
             </>
           )}
