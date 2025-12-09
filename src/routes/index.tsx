@@ -2,7 +2,6 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { PlusIcon } from 'lucide-react'
 
-import { db } from '@/db'
 import { Header } from '@/components/Header'
 import { TodoItem } from '@/components/TodoItem'
 
@@ -14,9 +13,12 @@ import {
   EmptyTitle,
 } from '@/components/ui/empty'
 
+import { db } from '@/db'
+import { todos as tododb } from '@/db/schema'
+import { desc } from 'drizzle-orm'
+
 const todosFn = createServerFn({ method: 'GET' }).handler(async () => {
-  const todos = await db.query.todos.findMany()
-  return todos
+  return await db.select().from(tododb).orderBy(desc(tododb.updatedAt))
 })
 
 export const Route = createFileRoute('/')({
@@ -29,7 +31,6 @@ function App() {
 
   const completedTodos = todos.filter((todo) => todo.isComplete).length
   const totalTodos = todos.length
-  // const totalTodos = 0
 
   return (
     <div className="min-h-screen bg-[#FFF8E7] p-8">
