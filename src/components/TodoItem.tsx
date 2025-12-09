@@ -6,12 +6,15 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { PencilIcon, Trash2Icon } from 'lucide-react'
 
 type Todo = InferSelectModel<typeof todos>
 
 interface TodoItemProps {
   todo: Todo
   onToggleComplete: (id: string) => void
+  onEdit: (id: string) => void
+  onDelete: (id: string) => void
 }
 
 function getRelativeTimeString(date: Date): string {
@@ -39,7 +42,12 @@ function getRelativeTimeString(date: Date): string {
   return years === 1 ? '1 year ago' : `${years} years ago`
 }
 
-export function TodoItem({ todo, onToggleComplete }: TodoItemProps) {
+export function TodoItem({
+  todo,
+  onToggleComplete,
+  onEdit,
+  onDelete,
+}: TodoItemProps) {
   const createdDate = new Date(todo.createdAt)
   const updatedDate = new Date(todo.updatedAt)
 
@@ -58,9 +66,17 @@ export function TodoItem({ todo, onToggleComplete }: TodoItemProps) {
     onToggleComplete(todo.id)
   }
 
+  const handleEdit = () => {
+    onEdit(todo.id)
+  }
+
+  const handleDelete = () => {
+    onDelete(todo.id)
+  }
+
   return (
     <div
-      className={`border-4 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 ${
+      className={`group relative border-4 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 ${
         todo.isComplete ? 'bg-green-400' : 'bg-white'
       }`}
     >
@@ -109,6 +125,22 @@ export function TodoItem({ todo, onToggleComplete }: TodoItemProps) {
               </Tooltip>
             </div>
           </div>
+        </div>
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button
+            onClick={handleEdit}
+            className="p-2 border-4 border-black bg-blue-400 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
+            aria-label="Edit todo"
+          >
+            <PencilIcon className="size-5" strokeWidth={2.5} />
+          </button>
+          <button
+            onClick={handleDelete}
+            className="p-2 border-4 border-black bg-red-400 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
+            aria-label="Delete todo"
+          >
+            <Trash2Icon className="size-5" strokeWidth={2.5} />
+          </button>
         </div>
       </div>
     </div>
