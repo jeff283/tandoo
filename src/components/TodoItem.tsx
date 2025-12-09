@@ -63,58 +63,76 @@ export function TodoItem({
   return (
     <div
       onClick={handleTodoClick}
-      className={`group relative border-4 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 cursor-pointer ${
+      className={`group border-4 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 cursor-pointer ${
         todo.isComplete ? 'bg-green-400' : 'bg-white'
       }`}
     >
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-start gap-4 flex-1">
-          <div
-            onClick={handleToggleComplete}
-            className={`w-8 h-8 border-4 border-black shrink-0 mt-1 cursor-pointer ${
-              todo.isComplete ? 'bg-black' : 'bg-white'
+      <div className="flex items-start gap-4">
+        <div
+          onClick={handleToggleComplete}
+          className={`w-8 h-8 border-4 border-black shrink-0 mt-1 cursor-pointer ${
+            todo.isComplete ? 'bg-black' : 'bg-white'
+          }`}
+        >
+          {todo.isComplete && (
+            <div className="text-white text-center font-black text-xl leading-none">
+              ✓
+            </div>
+          )}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p
+            className={`text-3xl font-black ${
+              todo.isComplete ? 'line-through opacity-70' : ''
             }`}
           >
-            {todo.isComplete && (
-              <div className="text-white text-center font-black text-xl leading-none">
-                ✓
-              </div>
-            )}
-          </div>
-          <div className="flex-1">
-            <p
-              className={`text-3xl font-black ${
-                todo.isComplete ? 'line-through opacity-70' : ''
-              }`}
-            >
-              {todo.name}
-            </p>
-            <div className="mt-3 flex gap-3 text-xs">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span className="border-2 border-black bg-white px-2 py-0.5 cursor-pointer shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                    Created: {getRelativeTimeString(createdDate)}
-                  </span>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  <p>{formatLongDate(createdDate)}</p>
-                </TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span className="border-2 border-black bg-white px-2 py-0.5 cursor-pointer shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                    Updated: {getRelativeTimeString(updatedDate)}
-                  </span>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  <p>{formatLongDate(updatedDate)}</p>
-                </TooltipContent>
-              </Tooltip>
+            {todo.name}
+          </p>
+          {isActive && (
+            <div className="mt-3 flex gap-2 md:hidden">
+              <button
+                onClick={handleEdit}
+                className="px-4 py-2 border-4 border-black bg-blue-400 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all flex items-center gap-2 font-bold"
+                aria-label="Edit todo"
+              >
+                <PencilIcon className="size-4" strokeWidth={2.5} />
+                <span>Edit</span>
+              </button>
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 border-4 border-black bg-red-400 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all flex items-center gap-2 font-bold"
+                aria-label="Delete todo"
+              >
+                <Trash2Icon className="size-4" strokeWidth={2.5} />
+                <span>Delete</span>
+              </button>
             </div>
+          )}
+          <div className="mt-3 flex gap-3 text-xs">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="border-2 border-black bg-white px-2 py-0.5 cursor-pointer shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                  Created: {getRelativeTimeString(createdDate)}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                <p>{formatLongDate(createdDate)}</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="border-2 border-black bg-white px-2 py-0.5 cursor-pointer shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                  Updated: {getRelativeTimeString(updatedDate)}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                <p>{formatLongDate(updatedDate)}</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
         </div>
         <div
-          className={`absolute right-4 top-1/2 -translate-y-1/2 flex gap-2 transition-opacity ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+          className={`hidden md:flex gap-2 transition-opacity ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
         >
           <button
             onClick={handleEdit}
