@@ -1,12 +1,19 @@
 import { FormEvent, useRef, useState } from 'react'
-import { Input } from './ui/input'
+import { Input } from '@/components/ui/input'
 import { CheckIcon, Loader2Icon, PlusIcon } from 'lucide-react'
-// import { createServerFn, useServerFn } from '@tanstack/react-start'
+import { createServerFn, useServerFn } from '@tanstack/react-start'
+import { db } from '@/db'
+import { todos, TodoInsertSchema } from '@/db/schema'
+import { redirect } from '@tanstack/react-router'
 // import z from 'zod'
-// import { db } from '@/db'
-// import { todos } from '@/db/schema'
-// import { redirect } from '@tanstack/react-router'
 // import { eq } from 'drizzle-orm'
+
+const addTodoFn = createServerFn({ method: 'POST' })
+  .inputValidator(TodoInsertSchema)
+  .handler(async ({ data }) => {
+    await db.insert(todos).values(data)
+    throw redirect({ to: '/' })
+  })
 
 interface TodoFormProps {
   mode?: 'add' | 'update'
@@ -20,8 +27,23 @@ export default function TodoForm({
   const nameRef = useRef<HTMLInputElement>(null)
   const [isLoading, setIsLoading] = useState(false)
 
+  const handleAddTodo = useServerFn(addTodoFn)
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
+    const name = nameRef.current?.value.trim()
+    if (!name) return
+
+    try {
+      setIsLoading(true)
+      if (mode === 'add') {
+        await handleAddTodo({ data: { name } })
+      }
+    } catch (error) {
+      console.error('Error submitting the form:', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const isAddMode = mode === 'add'
