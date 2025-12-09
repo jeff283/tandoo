@@ -1,3 +1,4 @@
+import TodoForm from '@/components/todo-form'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { ArrowLeftIcon } from 'lucide-react'
 
@@ -31,8 +32,4 @@ function RouteComponent() {
       </div>
     </div>
   )
-}
-
-const TodoForm = () => {
-  return <div className="text-lg font-bold">Todo Form</div>
 }
