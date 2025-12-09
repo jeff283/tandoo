@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { PlusIcon } from 'lucide-react'
+import { useState } from 'react'
 
 import { Header } from '@/components/Header'
 import { TodoItem } from '@/components/TodoItem'
@@ -28,9 +29,14 @@ export const Route = createFileRoute('/')({
 
 function App() {
   const todos = Route.useLoaderData()
+  const [activeTodoId, setActiveTodoId] = useState<string | null>(null)
 
   const completedTodos = todos.filter((todo) => todo.isComplete).length
   const totalTodos = todos.length
+
+  const handleTodoClick = (id: string) => {
+    setActiveTodoId((prev) => (prev === id ? null : id))
+  }
 
   return (
     <div className="min-h-screen bg-[#FFF8E7] p-8">
@@ -71,6 +77,8 @@ function App() {
               <TodoItem
                 key={todo.id}
                 todo={todo}
+                isActive={activeTodoId === todo.id}
+                onTodoClick={handleTodoClick}
                 onToggleComplete={(id) => {
                   console.log('Todo Clicked: ', id)
                 }}

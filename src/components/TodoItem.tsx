@@ -7,24 +7,26 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { PencilIcon, Trash2Icon } from 'lucide-react'
-import { useState } from 'react'
 
 type Todo = InferSelectModel<typeof todos>
 
 interface TodoItemProps {
   todo: Todo
+  isActive: boolean
   onToggleComplete: (id: string) => void
   onEdit: (id: string) => void
   onDelete: (id: string) => void
+  onTodoClick: (id: string) => void
 }
 
 export function TodoItem({
   todo,
+  isActive,
   onToggleComplete,
   onEdit,
   onDelete,
+  onTodoClick,
 }: TodoItemProps) {
-  const [isActive, setIsActive] = useState(false)
   const createdDate = new Date(todo.createdAt)
   const updatedDate = new Date(todo.updatedAt)
 
@@ -55,7 +57,7 @@ export function TodoItem({
   }
 
   const handleTodoClick = () => {
-    setIsActive(!isActive)
+    onTodoClick(todo.id)
   }
 
   return (
