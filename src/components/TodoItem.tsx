@@ -10,25 +10,14 @@ import { createServerFn, useServerFn } from '@tanstack/react-start'
 import { db } from '@/db'
 import { todos, type Todo } from '@/db/schema'
 import z from 'zod'
-import { eq } from 'drizzle-orm'
+import { eq, not } from 'drizzle-orm'
 
 const toggleCompleteFn = createServerFn({ method: 'POST' })
   .inputValidator(z.object({ id: z.string() }))
   .handler(async ({ data }) => {
-    const todo = await db
-      .select({
-        isComplete: todos.isComplete,
-      })
-      .from(todos)
-      .where(eq(todos.id, data.id))
-      .limit(1)
-    if (todo.length === 0) return
-
-    const todoIsComplete = todo[0].isComplete
-
     await db
       .update(todos)
-      .set({ isComplete: !todoIsComplete })
+      .set({ isComplete: not(todos.isComplete) })
       .where(eq(todos.id, data.id))
 
     throw redirect({ to: '/' })
