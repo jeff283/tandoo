@@ -20,15 +20,12 @@ const toggleCompleteFn = createServerFn({ method: 'POST' })
       .update(todos)
       .set({ isComplete: not(todos.isComplete) })
       .where(eq(todos.id, data.id))
-
-    // throw redirect({ to: '/' })
   })
 
 const deleteTodoFn = createServerFn({ method: 'POST' })
   .inputValidator(z.object({ id: z.string() }))
   .handler(async ({ data }) => {
     await db.delete(todos).where(eq(todos.id, data.id))
-    // throw redirect({ to: '/' })
   })
 interface TodoItemProps {
   todo: Todo
@@ -43,6 +40,7 @@ export function TodoItem({ todo, isActive, onTodoClick }: TodoItemProps) {
   const [isDeleting, setIsDeleting] = useState(false)
 
   const [isTodoComplete, setIsTodoComplete] = useState(todo.isComplete)
+  const [isDeleted, setIsDeleted] = useState(false)
 
   const router = useRouter()
 
@@ -75,12 +73,16 @@ export function TodoItem({ todo, isActive, onTodoClick }: TodoItemProps) {
     }
   }
 
-  const handleDelete = async (e: React.MouseEvent) => {
+  const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation()
     try {
       setIsDeleting(true)
-      await deleteTodo({ data: { id: todo.id } })
-      router.invalidate()
+      setIsDeleted(true)
+
+      startTransition(async () => {
+        await deleteTodo({ data: { id: todo.id } })
+        router.invalidate()
+      })
     } finally {
       setIsDeleting(false)
     }
@@ -95,7 +97,7 @@ export function TodoItem({ todo, isActive, onTodoClick }: TodoItemProps) {
       onClick={handleTodoClick}
       className={`group border-4 border-black p-3 sm:p-4 md:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 cursor-pointer ${
         isTodoComplete ? 'bg-green-400' : 'bg-white'
-      } ${isDeleting ? 'opacity-50 pointer-events-none' : ''}`}
+      } ${isDeleted ? 'hidden  scale-95 pointer-events-none' : ''}`}
     >
       <div className="flex items-start gap-2 sm:gap-3 md:gap-4">
         <div
