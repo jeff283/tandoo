@@ -1,14 +1,34 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, notFound } from '@tanstack/react-router'
 import TodoForm from '@/components/todo-form'
 import { ArrowLeftIcon } from 'lucide-react'
+import { createServerFn } from '@tanstack/react-start'
+import z from 'zod'
+import { db } from '@/db'
+import { todos } from '@/db/schema'
+import { eq } from 'drizzle-orm'
+
+const loaderFn = createServerFn({ method: 'GET' })
+  .inputValidator(z.object({ id: z.string() }))
+  .handler(async ({ data }) => {
+    const todo = await db
+      .select()
+      .from(todos)
+      .where(eq(todos.id, data.id))
+      .limit(1)
+
+    if (todo.length === 0 || !todo[0]) {
+      throw notFound()
+    }
+    return todo[0]
+  })
 
 export const Route = createFileRoute('/todos/$id/edit/')({
   component: RouteComponent,
-  loader: ({ params }) => params.id,
+  loader: ({ params }) => loaderFn({ data: { id: params.id } }),
 })
 
 function RouteComponent() {
-  // const id = Route.useLoaderData()
+  const todo = Route.useLoaderData()
 
   return (
     <div className="min-h-screen bg-[#FFF8E7] p-3 sm:p-6 md:p-8">
@@ -31,7 +51,7 @@ function RouteComponent() {
             </p>
           </div>
           <div className="p-3 sm:p-4 md:p-6">
-            <TodoForm mode="update" />
+            <TodoForm mode="update" todo={todo} />
           </div>
         </div>
       </div>
