@@ -48,6 +48,23 @@ export const Route = createRootRoute({
       </div>
     )
   },
+  errorComponent: ({ error }) => {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen gap-6 bg-[#FFF8E7] p-6">
+        <h1 className="text-6xl sm:text-7xl md:text-8xl font-black uppercase tracking-tight border-4 sm:border-6 md:border-8 border-black bg-yellow-300 p-4 sm:p-6 md:p-8 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] md:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] -rotate-2">
+          Error
+        </h1>
+        <p className="text-xl sm:text-2xl md:text-3xl font-bold border-4 border-black bg-white px-6 py-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] uppercase text-center">
+          {error.message}
+        </p>
+        <Link to="/">
+          <button className="px-6 py-3 text-lg font-bold border-4 border-black bg-lime-400 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[3px] hover:translate-y-[3px] transition-all rounded-none active:shadow-none active:translate-x-1.5 active:translate-y-1.5 uppercase">
+            Go Back Home
+          </button>
+        </Link>
+      </div>
+    )
+  },
 
   shellComponent: RootDocument,
 })
