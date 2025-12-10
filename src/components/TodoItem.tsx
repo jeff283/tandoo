@@ -3,9 +3,10 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { PencilIcon, Trash2Icon } from 'lucide-react'
+import { PencilIcon, Trash2Icon, Loader2Icon } from 'lucide-react'
 import { Link, redirect } from '@tanstack/react-router'
 import { createServerFn, useServerFn } from '@tanstack/react-start'
+import { useState } from 'react'
 
 import { db } from '@/db'
 import { todos, type Todo } from '@/db/schema'
@@ -38,6 +39,8 @@ interface TodoItemProps {
 export function TodoItem({ todo, isActive, onTodoClick }: TodoItemProps) {
   const updateToggleComplete = useServerFn(toggleCompleteFn)
   const deleteTodo = useServerFn(deleteTodoFn)
+  const [isTogglingComplete, setIsTogglingComplete] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const createdDate = new Date(todo.createdAt)
   const updatedDate = new Date(todo.updatedAt)
@@ -55,12 +58,22 @@ export function TodoItem({ todo, isActive, onTodoClick }: TodoItemProps) {
 
   const handleToggleComplete = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    await updateToggleComplete({ data: { id: todo.id } })
+    try {
+      setIsTogglingComplete(true)
+      await updateToggleComplete({ data: { id: todo.id } })
+    } finally {
+      setIsTogglingComplete(false)
+    }
   }
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    await deleteTodo({ data: { id: todo.id } })
+    try {
+      setIsDeleting(true)
+      await deleteTodo({ data: { id: todo.id } })
+    } finally {
+      setIsDeleting(false)
+    }
   }
 
   const handleTodoClick = () => {
@@ -72,19 +85,28 @@ export function TodoItem({ todo, isActive, onTodoClick }: TodoItemProps) {
       onClick={handleTodoClick}
       className={`group border-4 border-black p-3 sm:p-4 md:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 cursor-pointer ${
         todo.isComplete ? 'bg-green-400' : 'bg-white'
-      }`}
+      } ${isDeleting ? 'opacity-50 pointer-events-none' : ''}`}
     >
       <div className="flex items-start gap-2 sm:gap-3 md:gap-4">
         <div
           onClick={handleToggleComplete}
-          className={`w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 border-3 sm:border-4 border-black shrink-0 mt-0.5 sm:mt-1 cursor-pointer ${
+          className={`w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 border-3 sm:border-4 border-black shrink-0 mt-0.5 sm:mt-1 cursor-pointer flex items-center justify-center ${
             todo.isComplete ? 'bg-black' : 'bg-white'
-          }`}
+          } ${isTogglingComplete ? 'opacity-50 pointer-events-none' : ''}`}
         >
-          {todo.isComplete && (
-            <div className="text-white text-center font-black text-base sm:text-lg md:text-xl leading-none">
-              ✓
-            </div>
+          {isTogglingComplete ? (
+            <Loader2Icon
+              className={`size-3 sm:size-4 md:size-5 animate-spin ${
+                todo.isComplete ? 'text-white' : 'text-black'
+              }`}
+              strokeWidth={2.5}
+            />
+          ) : (
+            todo.isComplete && (
+              <div className="text-white text-center font-black text-base sm:text-lg md:text-xl leading-none">
+                ✓
+              </div>
+            )
           )}
         </div>
         <div className="flex-1 min-w-0">
@@ -111,11 +133,22 @@ export function TodoItem({ todo, isActive, onTodoClick }: TodoItemProps) {
               </Link>
               <button
                 onClick={handleDelete}
-                className="flex-1 px-3 sm:px-4 py-1.5 sm:py-2 border-3 sm:border-4 border-black bg-red-400 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] sm:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all flex items-center justify-center gap-1.5 sm:gap-2 font-bold text-sm sm:text-base"
+                disabled={isDeleting}
+                className="flex-1 px-3 sm:px-4 py-1.5 sm:py-2 border-3 sm:border-4 border-black bg-red-400 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] sm:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all flex items-center justify-center gap-1.5 sm:gap-2 font-bold text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="Delete todo"
               >
-                <Trash2Icon className="size-3.5 sm:size-4" strokeWidth={2.5} />
-                <span>Delete</span>
+                {isDeleting ? (
+                  <Loader2Icon
+                    className="size-3.5 sm:size-4 animate-spin"
+                    strokeWidth={2.5}
+                  />
+                ) : (
+                  <Trash2Icon
+                    className="size-3.5 sm:size-4"
+                    strokeWidth={2.5}
+                  />
+                )}
+                <span>{isDeleting ? 'Deleting...' : 'Delete'}</span>
               </button>
             </div>
           )}
@@ -155,10 +188,15 @@ export function TodoItem({ todo, isActive, onTodoClick }: TodoItemProps) {
           </Link>
           <button
             onClick={handleDelete}
-            className="p-2 border-4 border-black bg-red-400 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
+            disabled={isDeleting}
+            className="p-2 border-4 border-black bg-red-400 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Delete todo"
           >
-            <Trash2Icon className="size-5" strokeWidth={2.5} />
+            {isDeleting ? (
+              <Loader2Icon className="size-5 animate-spin" strokeWidth={2.5} />
+            ) : (
+              <Trash2Icon className="size-5" strokeWidth={2.5} />
+            )}
           </button>
         </div>
       </div>
