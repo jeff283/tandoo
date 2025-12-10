@@ -4,7 +4,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { PencilIcon, Trash2Icon, Loader2Icon } from 'lucide-react'
-import { Link, redirect } from '@tanstack/react-router'
+import { Link, useRouter } from '@tanstack/react-router'
 import { createServerFn, useServerFn } from '@tanstack/react-start'
 import { useState } from 'react'
 
@@ -21,14 +21,14 @@ const toggleCompleteFn = createServerFn({ method: 'POST' })
       .set({ isComplete: not(todos.isComplete) })
       .where(eq(todos.id, data.id))
 
-    throw redirect({ to: '/' })
+    // throw redirect({ to: '/' })
   })
 
 const deleteTodoFn = createServerFn({ method: 'POST' })
   .inputValidator(z.object({ id: z.string() }))
   .handler(async ({ data }) => {
     await db.delete(todos).where(eq(todos.id, data.id))
-    throw redirect({ to: '/' })
+    // throw redirect({ to: '/' })
   })
 interface TodoItemProps {
   todo: Todo
@@ -41,6 +41,10 @@ export function TodoItem({ todo, isActive, onTodoClick }: TodoItemProps) {
   const deleteTodo = useServerFn(deleteTodoFn)
   const [isTogglingComplete, setIsTogglingComplete] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+
+  const [isTodoComplete, setIsTodoComplete] = useState(todo.isComplete)
+
+  const router = useRouter()
 
   const createdDate = new Date(todo.createdAt)
   const updatedDate = new Date(todo.updatedAt)
@@ -60,7 +64,9 @@ export function TodoItem({ todo, isActive, onTodoClick }: TodoItemProps) {
     e.stopPropagation()
     try {
       setIsTogglingComplete(true)
+      setIsTodoComplete((prev) => !prev)
       await updateToggleComplete({ data: { id: todo.id } })
+      router.invalidate()
     } finally {
       setIsTogglingComplete(false)
     }
@@ -71,6 +77,7 @@ export function TodoItem({ todo, isActive, onTodoClick }: TodoItemProps) {
     try {
       setIsDeleting(true)
       await deleteTodo({ data: { id: todo.id } })
+      router.invalidate()
     } finally {
       setIsDeleting(false)
     }
@@ -84,25 +91,25 @@ export function TodoItem({ todo, isActive, onTodoClick }: TodoItemProps) {
     <div
       onClick={handleTodoClick}
       className={`group border-4 border-black p-3 sm:p-4 md:p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 cursor-pointer ${
-        todo.isComplete ? 'bg-green-400' : 'bg-white'
+        isTodoComplete ? 'bg-green-400' : 'bg-white'
       } ${isDeleting ? 'opacity-50 pointer-events-none' : ''}`}
     >
       <div className="flex items-start gap-2 sm:gap-3 md:gap-4">
         <div
           onClick={handleToggleComplete}
           className={`w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 border-3 sm:border-4 border-black shrink-0 mt-0.5 sm:mt-1 cursor-pointer flex items-center justify-center ${
-            todo.isComplete ? 'bg-black' : 'bg-white'
+            isTodoComplete ? 'bg-black' : 'bg-white'
           } ${isTogglingComplete ? 'opacity-50 pointer-events-none' : ''}`}
         >
           {isTogglingComplete ? (
             <Loader2Icon
               className={`size-3 sm:size-4 md:size-5 animate-spin ${
-                todo.isComplete ? 'text-white' : 'text-black'
+                isTodoComplete ? 'text-white' : 'text-black'
               }`}
               strokeWidth={2.5}
             />
           ) : (
-            todo.isComplete && (
+            isTodoComplete && (
               <div className="text-white text-center font-black text-base sm:text-lg md:text-xl leading-none">
                 ✓
               </div>
@@ -112,7 +119,7 @@ export function TodoItem({ todo, isActive, onTodoClick }: TodoItemProps) {
         <div className="flex-1 min-w-0">
           <p
             className={`text-xl sm:text-2xl md:text-3xl font-black wrap-break-words ${
-              todo.isComplete ? 'line-through opacity-70' : ''
+              isTodoComplete ? 'line-through opacity-70' : ''
             }`}
           >
             {todo.name}
