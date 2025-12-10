@@ -1,6 +1,3 @@
-import type { todos } from '@/db/schema'
-import type { InferSelectModel } from 'drizzle-orm'
-
 import {
   Tooltip,
   TooltipContent,
@@ -8,13 +5,35 @@ import {
 } from '@/components/ui/tooltip'
 import { PencilIcon, Trash2Icon } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
+import { createServerFn, useServerFn } from '@tanstack/react-start'
 
-type Todo = InferSelectModel<typeof todos>
+import { db } from '@/db'
+import { todos, type Todo } from '@/db/schema'
+import z from 'zod'
+import { eq } from 'drizzle-orm'
 
+const toggleCompleteFn = createServerFn({ method: 'POST' })
+  .inputValidator(z.object({ id: z.string() }))
+  .handler(async ({ data }) => {
+    const todo = await db
+      .select({
+        isComplete: todos.isComplete,
+      })
+      .from(todos)
+      .where(eq(todos.id, data.id))
+      .limit(1)
+    if (todo.length === 0) return
+
+    const todoIsComplete = todo[0].isComplete
+
+    await db
+      .update(todos)
+      .set({ isComplete: !todoIsComplete })
+      .where(eq(todos.id, data.id))
+  })
 interface TodoItemProps {
   todo: Todo
   isActive: boolean
-  onToggleComplete: (id: string) => void
   onDelete: (id: string) => void
   onTodoClick: (id: string) => void
 }
@@ -22,10 +41,11 @@ interface TodoItemProps {
 export function TodoItem({
   todo,
   isActive,
-  onToggleComplete,
   onDelete,
   onTodoClick,
 }: TodoItemProps) {
+  const updateToggleComplete = useServerFn(toggleCompleteFn)
+
   const createdDate = new Date(todo.createdAt)
   const updatedDate = new Date(todo.updatedAt)
 
@@ -40,9 +60,9 @@ export function TodoItem({
     })
   }
 
-  const handleToggleComplete = (e: React.MouseEvent) => {
+  const handleToggleComplete = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    onToggleComplete(todo.id)
+    await updateToggleComplete({ data: { id: todo.id } })
   }
 
   const handleDelete = (e: React.MouseEvent) => {
