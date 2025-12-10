@@ -17,15 +17,10 @@ const addTodoFn = createServerFn({ method: 'POST' })
 
 interface TodoFormProps {
   mode?: 'add' | 'update'
-  initialValue?: string
   todo?: Todo
 }
 
-export default function TodoForm({
-  mode = 'add',
-  initialValue = '',
-  todo,
-}: TodoFormProps) {
+export default function TodoForm({ mode = 'add', todo }: TodoFormProps) {
   const nameRef = useRef<HTMLInputElement>(null)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -69,7 +64,7 @@ export default function TodoForm({
           placeholder="Enter your todo..."
           className="w-full h-12 sm:h-14 md:h-16 px-3 sm:px-4 md:px-6 py-3 sm:py-4 md:py-6 text-base sm:text-lg md:text-xl font-medium border-4 border-black rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] focus:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:focus:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] focus:-translate-x-0.5 focus:-translate-y-0.5 transition-all bg-white focus:outline-none focus:ring-0 placeholder:font-semibold placeholder:text-gray-400"
           aria-label="Todo task"
-          defaultValue={mode === 'update' && todo ? todo.name : initialValue}
+          defaultValue={mode === 'update' && todo ? todo.name : ''}
         />
       </div>
 
