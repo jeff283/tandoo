@@ -4,7 +4,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { PencilIcon, Trash2Icon } from 'lucide-react'
-import { Link } from '@tanstack/react-router'
+import { Link, redirect } from '@tanstack/react-router'
 import { createServerFn, useServerFn } from '@tanstack/react-start'
 
 import { db } from '@/db'
@@ -30,6 +30,8 @@ const toggleCompleteFn = createServerFn({ method: 'POST' })
       .update(todos)
       .set({ isComplete: !todoIsComplete })
       .where(eq(todos.id, data.id))
+
+    throw redirect({ to: '/' })
   })
 interface TodoItemProps {
   todo: Todo
