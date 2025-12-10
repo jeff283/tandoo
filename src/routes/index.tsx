@@ -83,9 +83,6 @@ function App() {
                 todo={todo}
                 isActive={activeTodoId === todo.id}
                 onTodoClick={handleTodoClick}
-                onDelete={(id) => {
-                  console.log('Delete Todo: ', id)
-                }}
               />
             ))}
           </div>

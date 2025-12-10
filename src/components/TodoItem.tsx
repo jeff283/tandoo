@@ -22,20 +22,22 @@ const toggleCompleteFn = createServerFn({ method: 'POST' })
 
     throw redirect({ to: '/' })
   })
+
+const deleteTodoFn = createServerFn({ method: 'POST' })
+  .inputValidator(z.object({ id: z.string() }))
+  .handler(async ({ data }) => {
+    await db.delete(todos).where(eq(todos.id, data.id))
+    throw redirect({ to: '/' })
+  })
 interface TodoItemProps {
   todo: Todo
   isActive: boolean
-  onDelete: (id: string) => void
   onTodoClick: (id: string) => void
 }
 
-export function TodoItem({
-  todo,
-  isActive,
-  onDelete,
-  onTodoClick,
-}: TodoItemProps) {
+export function TodoItem({ todo, isActive, onTodoClick }: TodoItemProps) {
   const updateToggleComplete = useServerFn(toggleCompleteFn)
+  const deleteTodo = useServerFn(deleteTodoFn)
 
   const createdDate = new Date(todo.createdAt)
   const updatedDate = new Date(todo.updatedAt)
@@ -56,9 +58,9 @@ export function TodoItem({
     await updateToggleComplete({ data: { id: todo.id } })
   }
 
-  const handleDelete = (e: React.MouseEvent) => {
+  const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    onDelete(todo.id)
+    await deleteTodo({ data: { id: todo.id } })
   }
 
   const handleTodoClick = () => {
