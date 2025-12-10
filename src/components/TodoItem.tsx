@@ -6,7 +6,7 @@ import {
 import { PencilIcon, Trash2Icon, Loader2Icon } from 'lucide-react'
 import { Link, useRouter } from '@tanstack/react-router'
 import { createServerFn, useServerFn } from '@tanstack/react-start'
-import { useState } from 'react'
+import { startTransition, useState } from 'react'
 
 import { db } from '@/db'
 import { todos, type Todo } from '@/db/schema'
@@ -60,13 +60,16 @@ export function TodoItem({ todo, isActive, onTodoClick }: TodoItemProps) {
     })
   }
 
-  const handleToggleComplete = async (e: React.MouseEvent) => {
+  const handleToggleComplete = (e: React.MouseEvent) => {
     e.stopPropagation()
     try {
       setIsTogglingComplete(true)
       setIsTodoComplete((prev) => !prev)
-      await updateToggleComplete({ data: { id: todo.id } })
-      router.invalidate()
+
+      startTransition(async () => {
+        await updateToggleComplete({ data: { id: todo.id } })
+        router.invalidate()
+      })
     } finally {
       setIsTogglingComplete(false)
     }
