@@ -3,7 +3,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { PencilIcon, Trash2Icon, Loader2Icon } from 'lucide-react'
+import { PencilIcon, Trash2Icon } from 'lucide-react'
 import { Link, useRouter } from '@tanstack/react-router'
 import { createServerFn, useServerFn } from '@tanstack/react-start'
 import { startTransition, useState } from 'react'
@@ -36,8 +36,6 @@ interface TodoItemProps {
 export function TodoItem({ todo, isActive, onTodoClick }: TodoItemProps) {
   const updateToggleComplete = useServerFn(toggleCompleteFn)
   const deleteTodo = useServerFn(deleteTodoFn)
-  const [isTogglingComplete, setIsTogglingComplete] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
 
   const [isTodoComplete, setIsTodoComplete] = useState(todo.isComplete)
   const [isDeleted, setIsDeleted] = useState(false)
@@ -60,32 +58,22 @@ export function TodoItem({ todo, isActive, onTodoClick }: TodoItemProps) {
 
   const handleToggleComplete = (e: React.MouseEvent) => {
     e.stopPropagation()
-    try {
-      setIsTogglingComplete(true)
-      setIsTodoComplete((prev) => !prev)
+    setIsTodoComplete((prev) => !prev)
 
-      startTransition(async () => {
-        await updateToggleComplete({ data: { id: todo.id } })
-        router.invalidate()
-      })
-    } finally {
-      setIsTogglingComplete(false)
-    }
+    startTransition(async () => {
+      await updateToggleComplete({ data: { id: todo.id } })
+      router.invalidate()
+    })
   }
 
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation()
-    try {
-      setIsDeleting(true)
-      setIsDeleted(true)
+    setIsDeleted(true)
 
-      startTransition(async () => {
-        await deleteTodo({ data: { id: todo.id } })
-        router.invalidate()
-      })
-    } finally {
-      setIsDeleting(false)
-    }
+    startTransition(async () => {
+      await deleteTodo({ data: { id: todo.id } })
+      router.invalidate()
+    })
   }
 
   const handleTodoClick = () => {
@@ -104,21 +92,12 @@ export function TodoItem({ todo, isActive, onTodoClick }: TodoItemProps) {
           onClick={handleToggleComplete}
           className={`w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 border-3 sm:border-4 border-black shrink-0 mt-0.5 sm:mt-1 cursor-pointer flex items-center justify-center ${
             isTodoComplete ? 'bg-black' : 'bg-white'
-          } ${isTogglingComplete ? 'opacity-50 pointer-events-none' : ''}`}
+          }`}
         >
-          {isTogglingComplete ? (
-            <Loader2Icon
-              className={`size-3 sm:size-4 md:size-5 animate-spin ${
-                isTodoComplete ? 'text-white' : 'text-black'
-              }`}
-              strokeWidth={2.5}
-            />
-          ) : (
-            isTodoComplete && (
-              <div className="text-white text-center font-black text-base sm:text-lg md:text-xl leading-none">
-                ✓
-              </div>
-            )
+          {isTodoComplete && (
+            <div className="text-white text-center font-black text-base sm:text-lg md:text-xl leading-none">
+              ✓
+            </div>
           )}
         </div>
         <div className="flex-1 min-w-0">
@@ -145,22 +124,11 @@ export function TodoItem({ todo, isActive, onTodoClick }: TodoItemProps) {
               </Link>
               <button
                 onClick={handleDelete}
-                disabled={isDeleting}
-                className="flex-1 px-3 sm:px-4 py-1.5 sm:py-2 border-3 sm:border-4 border-black bg-red-400 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] sm:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all flex items-center justify-center gap-1.5 sm:gap-2 font-bold text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-3 sm:px-4 py-1.5 sm:py-2 border-3 sm:border-4 border-black bg-red-400 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] sm:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all flex items-center justify-center gap-1.5 sm:gap-2 font-bold text-sm sm:text-base"
                 aria-label="Delete todo"
               >
-                {isDeleting ? (
-                  <Loader2Icon
-                    className="size-3.5 sm:size-4 animate-spin"
-                    strokeWidth={2.5}
-                  />
-                ) : (
-                  <Trash2Icon
-                    className="size-3.5 sm:size-4"
-                    strokeWidth={2.5}
-                  />
-                )}
-                <span>{isDeleting ? 'Deleting...' : 'Delete'}</span>
+                <Trash2Icon className="size-3.5 sm:size-4" strokeWidth={2.5} />
+                <span>Delete</span>
               </button>
             </div>
           )}
@@ -200,15 +168,10 @@ export function TodoItem({ todo, isActive, onTodoClick }: TodoItemProps) {
           </Link>
           <button
             onClick={handleDelete}
-            disabled={isDeleting}
-            className="p-2 border-4 border-black bg-red-400 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="p-2 border-4 border-black bg-red-400 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
             aria-label="Delete todo"
           >
-            {isDeleting ? (
-              <Loader2Icon className="size-5 animate-spin" strokeWidth={2.5} />
-            ) : (
-              <Trash2Icon className="size-5" strokeWidth={2.5} />
-            )}
+            <Trash2Icon className="size-5" strokeWidth={2.5} />
           </button>
         </div>
       </div>
