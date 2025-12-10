@@ -7,6 +7,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { PencilIcon, Trash2Icon } from 'lucide-react'
+import { Link } from '@tanstack/react-router'
 
 type Todo = InferSelectModel<typeof todos>
 
@@ -14,7 +15,6 @@ interface TodoItemProps {
   todo: Todo
   isActive: boolean
   onToggleComplete: (id: string) => void
-  onEdit: (id: string) => void
   onDelete: (id: string) => void
   onTodoClick: (id: string) => void
 }
@@ -23,7 +23,6 @@ export function TodoItem({
   todo,
   isActive,
   onToggleComplete,
-  onEdit,
   onDelete,
   onTodoClick,
 }: TodoItemProps) {
@@ -44,11 +43,6 @@ export function TodoItem({
   const handleToggleComplete = (e: React.MouseEvent) => {
     e.stopPropagation()
     onToggleComplete(todo.id)
-  }
-
-  const handleEdit = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    onEdit(todo.id)
   }
 
   const handleDelete = (e: React.MouseEvent) => {
@@ -90,14 +84,18 @@ export function TodoItem({
           </p>
           {isActive && (
             <div className="mt-2 sm:mt-3 flex gap-2 md:hidden">
-              <button
-                onClick={handleEdit}
-                className="flex-1 px-3 sm:px-4 py-1.5 sm:py-2 border-3 sm:border-4 border-black bg-blue-400 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] sm:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all flex items-center justify-center gap-1.5 sm:gap-2 font-bold text-sm sm:text-base"
-                aria-label="Edit todo"
-              >
-                <PencilIcon className="size-3.5 sm:size-4" strokeWidth={2.5} />
-                <span>Edit</span>
-              </button>
+              <Link to="/todos/$id/edit" params={{ id: todo.id }}>
+                <button
+                  className="flex-1 px-3 sm:px-4 py-1.5 sm:py-2 border-3 sm:border-4 border-black bg-blue-400 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] sm:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all flex items-center justify-center gap-1.5 sm:gap-2 font-bold text-sm sm:text-base"
+                  aria-label="Edit todo"
+                >
+                  <PencilIcon
+                    className="size-3.5 sm:size-4"
+                    strokeWidth={2.5}
+                  />
+                  <span>Edit</span>
+                </button>
+              </Link>
               <button
                 onClick={handleDelete}
                 className="flex-1 px-3 sm:px-4 py-1.5 sm:py-2 border-3 sm:border-4 border-black bg-red-400 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] sm:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all flex items-center justify-center gap-1.5 sm:gap-2 font-bold text-sm sm:text-base"
@@ -134,13 +132,14 @@ export function TodoItem({
         <div
           className={`hidden md:flex gap-2 transition-opacity ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
         >
-          <button
-            onClick={handleEdit}
-            className="p-2 border-4 border-black bg-blue-400 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
-            aria-label="Edit todo"
-          >
-            <PencilIcon className="size-5" strokeWidth={2.5} />
-          </button>
+          <Link to="/todos/$id/edit" params={{ id: todo.id }}>
+            <button
+              className="p-2 border-4 border-black bg-blue-400 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
+              aria-label="Edit todo"
+            >
+              <PencilIcon className="size-5" strokeWidth={2.5} />
+            </button>
+          </Link>
           <button
             onClick={handleDelete}
             className="p-2 border-4 border-black bg-red-400 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"

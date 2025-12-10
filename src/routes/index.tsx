@@ -86,9 +86,6 @@ function App() {
                 onToggleComplete={(id) => {
                   console.log('Todo Clicked: ', id)
                 }}
-                onEdit={(id) => {
-                  console.log('Edit Todo: ', id)
-                }}
                 onDelete={(id) => {
                   console.log('Delete Todo: ', id)
                 }}
