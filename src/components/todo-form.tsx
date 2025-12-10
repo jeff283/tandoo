@@ -5,13 +5,21 @@ import { createServerFn, useServerFn } from '@tanstack/react-start'
 import { db } from '@/db'
 import { todos, TodoInsertSchema, Todo } from '@/db/schema'
 import { redirect } from '@tanstack/react-router'
-// import z from 'zod'
-// import { eq } from 'drizzle-orm'
+import z from 'zod'
+import { eq } from 'drizzle-orm'
 
 const addTodoFn = createServerFn({ method: 'POST' })
   .inputValidator(TodoInsertSchema)
   .handler(async ({ data }) => {
     await db.insert(todos).values(data)
+    throw redirect({ to: '/' })
+  })
+
+const updateTodoFn = createServerFn({ method: 'POST' })
+  .inputValidator(z.object({ id: z.string(), name: z.string() }))
+  .handler(async ({ data }) => {
+    // Update logic here
+    await db.update(todos).set({ name: data.name }).where(eq(todos.id, data.id))
     throw redirect({ to: '/' })
   })
 
@@ -25,6 +33,7 @@ export default function TodoForm({ mode = 'add', todo }: TodoFormProps) {
   const [isLoading, setIsLoading] = useState(false)
 
   const handleAddTodo = useServerFn(addTodoFn)
+  const handleUpdateTodo = useServerFn(updateTodoFn)
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -35,6 +44,8 @@ export default function TodoForm({ mode = 'add', todo }: TodoFormProps) {
       setIsLoading(true)
       if (mode === 'add') {
         await handleAddTodo({ data: { name } })
+      } else if (mode === 'update' && todo) {
+        await handleUpdateTodo({ data: { id: todo.id, name } })
       }
     } catch (error) {
       console.error('Error submitting the form:', error)
