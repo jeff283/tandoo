@@ -1,9 +1,10 @@
 import { config } from 'dotenv'
 
-import { drizzle, NodePgDatabase } from 'drizzle-orm/node-postgres'
+import { drizzle } from 'drizzle-orm/node-postgres'
 import { Pool } from 'pg'
 
 import * as schema from './schema.ts'
+import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 
 config()
 
@@ -13,9 +14,7 @@ config()
 // export const db = drizzle(pool, { schema })
 
 export function getDb() {
-  let dbUrl: string | undefined
-
-  dbUrl = process.env.DATABASE_URL
+  const dbUrl = process.env.DATABASE_URL
 
   if (!dbUrl) {
     throw new Error('DATABASE_URL is not defined')

@@ -1,12 +1,14 @@
-import { FormEvent, useRef, useState } from 'react'
-import { Input } from '@/components/ui/input'
+import { useRef, useState } from 'react'
 import { CheckIcon, Loader2Icon, PlusIcon } from 'lucide-react'
 import { createServerFn, useServerFn } from '@tanstack/react-start'
-import { db } from '@/db'
-import { todos, TodoInsertSchema, Todo } from '@/db/schema'
 import { redirect } from '@tanstack/react-router'
 import z from 'zod'
 import { eq } from 'drizzle-orm'
+import type { Todo } from '@/db/schema'
+import type { FormEvent } from 'react'
+import { todos, TodoInsertSchema } from '@/db/schema'
+import { db } from '@/db'
+import { Input } from '@/components/ui/input'
 
 const addTodoFn = createServerFn({ method: 'POST' })
   .inputValidator(TodoInsertSchema)
@@ -44,7 +46,7 @@ export default function TodoForm({ mode = 'add', todo }: TodoFormProps) {
       setIsLoading(true)
       if (mode === 'add') {
         await handleAddTodo({ data: { name } })
-      } else if (mode === 'update' && todo) {
+      } else if (todo) {
         await handleUpdateTodo({ data: { id: todo.id, name } })
       }
     } catch (error) {

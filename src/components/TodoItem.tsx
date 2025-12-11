@@ -1,17 +1,18 @@
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
 import { PencilIcon, Trash2Icon } from 'lucide-react'
 import { Link, useRouter } from '@tanstack/react-router'
 import { createServerFn, useServerFn } from '@tanstack/react-start'
 import { startTransition, useState } from 'react'
 
-import { db } from '@/db'
-import { todos, type Todo } from '@/db/schema'
 import z from 'zod'
 import { eq, not } from 'drizzle-orm'
+import type {Todo} from '@/db/schema';
+import { db } from '@/db'
+import { todos  } from '@/db/schema'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 const toggleCompleteFn = createServerFn({ method: 'POST' })
   .inputValidator(z.object({ id: z.string() }))

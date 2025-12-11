@@ -3,6 +3,7 @@ import { createServerFn } from '@tanstack/react-start'
 import { PlusIcon } from 'lucide-react'
 import { useState } from 'react'
 
+import { desc } from 'drizzle-orm'
 import { Header } from '@/components/Header'
 import { TodoItem } from '@/components/TodoItem'
 
@@ -16,7 +17,6 @@ import {
 
 import { db } from '@/db'
 import { todos as tododb } from '@/db/schema'
-import { desc } from 'drizzle-orm'
 
 const todosFn = createServerFn({ method: 'GET' }).handler(async () => {
   return await db.select().from(tododb).orderBy(desc(tododb.updatedAt))
