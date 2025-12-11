@@ -1,6 +1,6 @@
-# The Revolutionary Todo List Application That Will Change Your Life Forever*
+# The Revolutionary Todo List Application That Will Change Your Life Forever\*
 
-*_Results not scientifically verified. Life-changing claims may be slightly exaggerated._
+\*_Results not scientifically verified. Life-changing claims may be slightly exaggerated._
 
 Welcome to **Tandoo** - because the world desperately needed yet another todo list application. We've conducted extensive market research (we asked Dave from accounting) and determined that humanity's greatest challenge isn't climate change, global inequality, or finding meaning in existence - it's managing grocery lists.
 
@@ -37,7 +37,7 @@ We're 99% sure that clicking a button works, but that 1% uncertainty keeps us up
 
 ## Styling With Tailwind CSS
 
-Why write `color: blue` when you can write `text-blue-500 hover:text-blue-700 transition-colors duration-200 ease-in-out`? 
+Why write `color: blue` when you can write `text-blue-500 hover:text-blue-700 transition-colors duration-200 ease-in-out`?
 
 Every todo item is crafted with the finest atomic CSS classes, ensuring your procrastination looks _stunning_.
 
@@ -84,13 +84,15 @@ Example of fetching todos from your enterprise-grade todo API:
 
 ```tsx
 const todosRoute = createRoute({
-  path: "/todos",
+  path: '/todos',
   loader: async () => {
     // Simulating a complex enterprise API call
-    const response = await fetch("https://api.todos.enterprise.corp.biz/v2/todos");
-    return response.json();
+    const response = await fetch(
+      'https://api.todos.enterprise.corp.biz/v2/todos',
+    )
+    return response.json()
   },
-});
+})
 ```
 
 ## State Management
@@ -106,6 +108,7 @@ This app is so heavily optimized that checking off a todo happens in less than 1
 ## Why Stop Here?
 
 Future roadmap (that will definitely happen):
+
 - Real-time collaborative todo editing (for when you and your roommate both need to add "clean bathroom" simultaneously)
 - Blockchain integration (immutable todo history on the distributed ledger)
 - AI-powered todo suggestions (because you need machine learning to remember to "call mom")
@@ -117,4 +120,4 @@ Tandoo: When a simple notepad just won't cut it anymore.
 
 ---
 
-**P.S.** This project is actually meant for learning TanStack Start. You know, in case you couldn't tell from the 300+ lines of configuration and the fact that it's a todo list with more dependencies than most startups have employees. 
+**P.S.** This project is actually meant for learning TanStack Start. You know, in case you couldn't tell from the 300+ lines of configuration and the fact that it's a todo list with more dependencies than most startups have employees.

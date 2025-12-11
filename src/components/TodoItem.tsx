@@ -5,9 +5,9 @@ import { startTransition, useState } from 'react'
 
 import z from 'zod'
 import { eq, not } from 'drizzle-orm'
-import type {Todo} from '@/db/schema';
+import type { Todo } from '@/db/schema'
 import { db } from '@/db'
-import { todos  } from '@/db/schema'
+import { todos } from '@/db/schema'
 import {
   Tooltip,
   TooltipContent,
